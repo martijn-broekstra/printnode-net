@@ -106,32 +106,47 @@ namespace PrintNode.Net
         [JsonProperty("createTimeStamp")]
         public DateTime? CreateTimeStamp { get; set; }
 
-        public static async Task<IEnumerable<PrintNodePrintJob>> ListAsync()
-        {
-            var response = await ApiHelper.Get("/printjobs");
+        private PrintNodeDelegatedClientContext ClientContext { get; set; }
 
-            return JsonConvert.DeserializeObject<IEnumerable<PrintNodePrintJob>>(response);
+        public static async Task<IEnumerable<PrintNodePrintJob>> ListAsync(PrintNodeDelegatedClientContext clientContext = null)
+        {
+            var response = await ApiHelper.Get("/printjobs", clientContext);
+
+            var list = JsonConvert.DeserializeObject<List<PrintNodePrintJob>>(response);
+
+            // Set clientContext on each job object;
+            list.ForEach(j => j.ClientContext = clientContext);
+
+            return list;
         }
 
-        public static async Task<IEnumerable<PrintNodePrintJob>> ListForPrinterAsync(int printerId)
+        public static async Task<IEnumerable<PrintNodePrintJob>> ListForPrinterAsync(int printerId, PrintNodeDelegatedClientContext clientContext = null)
         {
             var response = await ApiHelper.Get("/printers/" + printerId + "/printjobs");
 
-            return JsonConvert.DeserializeObject<IEnumerable<PrintNodePrintJob>>(response);
+            var list = JsonConvert.DeserializeObject<List<PrintNodePrintJob>>(response);
+
+            // Set clientContext on each job object;
+            list.ForEach(j => j.ClientContext = clientContext);
+
+            return list;
         }
 
-        public static async Task<PrintNodePrintJob> GetAsync(int id)
+        public static async Task<PrintNodePrintJob> GetAsync(int id, PrintNodeDelegatedClientContext clientContext = null)
         {
             var response = await ApiHelper.Get("/printjobs/" + id);
 
-            var list = JsonConvert.DeserializeObject<IEnumerable<PrintNodePrintJob>>(response);
+            var list = JsonConvert.DeserializeObject<List<PrintNodePrintJob>>(response);
+
+            // Set clientContext on each job object;
+            list.ForEach(j => j.ClientContext = clientContext);
 
             return list.FirstOrDefault();
         }
 
         public async Task<IEnumerable<PrintNodePrintJobState>> GetStates()
         {
-            var response = await ApiHelper.Get("/printjobs/" + Id + "/states");
+            var response = await ApiHelper.Get("/printjobs/" + Id + "/states", ClientContext);
 
             var list = JsonConvert.DeserializeObject<IEnumerable<IEnumerable<PrintNodePrintJobState>>>(response);
 

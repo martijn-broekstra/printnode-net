@@ -18,9 +18,9 @@ namespace PrintNode.Net
             NullValueHandling = NullValueHandling.Ignore
         };
 
-        internal static async Task<string> Get(string relativeUri)
+        internal static async Task<string> Get(string relativeUri, PrintNodeDelegatedClientContext clientContext = null)
         {
-            using (var http = BuildHttpClient())
+            using (var http = BuildHttpClient(clientContext: clientContext))
             {
                 var result = await http.GetAsync(BaseUri + relativeUri, CancellationToken.None);
 
@@ -33,9 +33,9 @@ namespace PrintNode.Net
             }
         }
 
-        internal static async Task<string> Post<T>(string relativeUri, T parameters)
+        internal static async Task<string> Post<T>(string relativeUri, T parameters, PrintNodeDelegatedClientContext clientContext = null)
         {
-            using (var http = BuildHttpClient())
+            using (var http = BuildHttpClient(clientContext: clientContext))
             {
                 var json = JsonConvert.SerializeObject(parameters, DefaultSerializationSettings);
 
@@ -85,7 +85,7 @@ namespace PrintNode.Net
             }
         }
 
-        private static HttpClient BuildHttpClient(Dictionary<string, string> headers = null)
+        private static HttpClient BuildHttpClient(Dictionary<string, string> headers = null, PrintNodeDelegatedClientContext clientContext = null)
         {
             headers = headers ?? new Dictionary<string, string>();
             var http = new HttpClient();
@@ -93,7 +93,7 @@ namespace PrintNode.Net
             http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(PrintNodeConfiguration.GetApiKey())));
             http.DefaultRequestHeaders.Add("Accept-Version", "~3");
 
-            var context = PrintNodeDelegatedClientContext.Current;
+            var context = clientContext;
 
             if (context != null)
             {

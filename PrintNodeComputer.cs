@@ -32,16 +32,16 @@ namespace PrintNode.Net
         [JsonProperty("state")]
         public string State { get; set; }
 
-        public static async Task<IEnumerable<PrintNodeComputer>> ListAsync()
+        public static async Task<IEnumerable<PrintNodeComputer>> ListAsync(PrintNodeDelegatedClientContext clientContext = null)
         {
-            var response = await ApiHelper.Get("/computers");
+            var response = await ApiHelper.Get("/computers", clientContext);
 
             return JsonConvert.DeserializeObject<List<PrintNodeComputer>>(response);
         }
 
-        public static async Task<PrintNodeComputer> GetAsync(long id)
+        public static async Task<PrintNodeComputer> GetAsync(long id, PrintNodeDelegatedClientContext clientContext = null)
         {
-            var response = await ApiHelper.Get("/computers/" + id);
+            var response = await ApiHelper.Get("/computers/" + id, clientContext);
 
             var list = JsonConvert.DeserializeObject<List<PrintNodeComputer>>(response);
 

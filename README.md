@@ -90,8 +90,6 @@ var accountId = response.Id.Value;
 
 ## To get a list of printers on behalf of a child account
 ```csharp
-using (new PrintNodeDelegatedClientContext(accountId))
-{
-	var printers = PrintNodePrinter.ListAsync();
-}
+var context = new PrintNodeDelegatedClientContext(accountId);
+var printers = PrintNodePrinter.ListAsync(context);
 ```

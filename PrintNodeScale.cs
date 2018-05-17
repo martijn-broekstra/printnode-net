@@ -119,16 +119,16 @@ namespace PrintNode.Net
         [JsonProperty("deviceId")]
         public int DeviceId { get; set; }
 
-        public static async Task<IEnumerable<PrintNodeScale>> ListForComputerAsync(long computerId)
+        public static async Task<IEnumerable<PrintNodeScale>> ListForComputerAsync(long computerId, PrintNodeDelegatedClientContext clientContext = null)
         {
-            var response = await ApiHelper.Get("/computer/" + computerId + "/scales");
+            var response = await ApiHelper.Get("/computer/" + computerId + "/scales", clientContext);
 
             return JsonConvert.DeserializeObject<List<PrintNodeScale>>(response);
         }
 
-        public static async Task<PrintNodeScale> GetAsync(long computerId, string deviceName)
+        public static async Task<PrintNodeScale> GetAsync(long computerId, string deviceName, PrintNodeDelegatedClientContext clientContext = null)
         {
-            var response = await ApiHelper.Get("/computer/" + computerId + "/scales/" + deviceName);
+            var response = await ApiHelper.Get("/computer/" + computerId + "/scales/" + deviceName, clientContext);
 
             return JsonConvert.DeserializeObject<PrintNodeScale>(response);
         }

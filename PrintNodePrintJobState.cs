@@ -54,9 +54,9 @@ namespace PrintNode.Net
         [JsonProperty("age")]
         public int Age { get; set; }
 
-        public static async Task<IEnumerable<IEnumerable<PrintNodePrintJobState>>> ListAsync()
+        public static async Task<IEnumerable<IEnumerable<PrintNodePrintJobState>>> ListAsync(PrintNodeDelegatedClientContext clientContext = null)
         {
-            var response = await ApiHelper.Get("/printjobs/states");
+            var response = await ApiHelper.Get("/printjobs/states", clientContext);
 
             return JsonConvert.DeserializeObject<IEnumerable<IEnumerable<PrintNodePrintJobState>>>(response);
         }
