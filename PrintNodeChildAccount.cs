@@ -82,11 +82,11 @@ namespace PrintNode.Net
             return JsonConvert.DeserializeObject<string>(response);
         }
 
-        public static async Task<bool> Exists()
+        public static async Task<bool> Exists(PrintNodeDelegatedClientContext clientContext = null)
         {
             try
             {
-                var response = await ApiHelper.Get("/whoami");
+                var response = await ApiHelper.Get("/whoami", clientContext);
 
                 return !string.IsNullOrEmpty(response);
             }
